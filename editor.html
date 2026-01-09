@@ -1,1222 +1,275 @@
-
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
     <meta charset="utf-8" />
-    <title>Lightning Editor</title>
-        <style type="text/css">
-    @import url('https://fonts.googleapis.com/css2?family=Tilt+Neon&family=JetBrains+Mono:wght@300;400;500;600&display=swap');
+    <title>Monaco Editor</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Monaco Editor</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style type="text/css">
+        html,
+        body {
+            background: #0b0d14; /* dark red -> dark blue */
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: consolas, "poppins", monospace;
+            color: #73A7FF; /* light red -> light blue */
+            display: flex;
+            flex-direction: column;
+        }
 
-    /* ============================================
-    GLOBAL THEME VARIABLES WITH ENHANCED PALETTES
-    ============================================ */
-    :root {
-        --bg-color: #0a0a0a;
-        --text-color: #f0f0f0;
-        --accent-color: #888888;
-        --hover-color: #1a1a1a;
-        --border-color: #2a2a2a;
-        --secondary-bg: #121212;
-        --secondary-text: #909090;
-        --pressed-color: #3a3a3a;
-        --gradient-start: rgba(136, 136, 136, 0.1);
-        --gradient-end: rgba(136, 136, 136, 0.05);
-        --shadow-color: rgba(0, 0, 0, 0.5);
-        --glow-color: rgba(136, 136, 136, 0.15);
-        --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
-        --border-radius-sm: 8px;
-        --border-radius-md: 12px;
-        --border-radius-lg: 16px;
-    }
-
-    html.theme-light {
-        --bg-color: #f8f9fa;
-        --text-color: #121212;
-        --accent-color: #0066cc;
-        --hover-color: #e9ecef;
-        --border-color: #dee2e6;
-        --secondary-bg: #ffffff;
-        --secondary-text: #6c757d;
-        --pressed-color: #ced4da;
-        --gradient-start: rgba(0, 102, 204, 0.08);
-        --gradient-end: rgba(0, 102, 204, 0.04);
-        --shadow-color: rgba(0, 0, 0, 0.1);
-        --glow-color: rgba(0, 102, 204, 0.15);
-        --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-    }
-
-    html.theme-blue {
-        --bg-color: #0d1b2a;
-        --text-color: #e0f7ff;
-        --accent-color: #5dade2;
-        --hover-color: #1b2c40;
-        --border-color: #2d4a6e;
-        --secondary-bg: #14213d;
-        --secondary-text: #7ea8d6;
-        --pressed-color: #2d4a6e;
-        --gradient-start: rgba(93, 173, 226, 0.15);
-        --gradient-end: rgba(93, 173, 226, 0.05);
-        --shadow-color: rgba(13, 27, 42, 0.8);
-        --glow-color: rgba(93, 173, 226, 0.2);
-        --card-shadow: 0 8px 32px rgba(13, 27, 42, 0.4);
-    }
-
-    html.theme-green {
-        --bg-color: #0d291a;
-        --text-color: #e8fff1;
-        --accent-color: #5ae67a;
-        --hover-color: #1a3a27;
-        --border-color: #2d6e4a;
-        --secondary-bg: #143d26;
-        --secondary-text: #7ed69e;
-        --pressed-color: #2d6e4a;
-        --gradient-start: rgba(90, 230, 122, 0.15);
-        --gradient-end: rgba(90, 230, 122, 0.05);
-        --shadow-color: rgba(13, 41, 26, 0.8);
-        --glow-color: rgba(90, 230, 122, 0.2);
-    }
-
-    html.theme-purple {
-        --bg-color: #1a0d2a;
-        --text-color: #f5e8ff;
-        --accent-color: #b85ae6;
-        --hover-color: #271a3a;
-        --border-color: #4a2d6e;
-        --secondary-bg: #26143d;
-        --secondary-text: #c87ed6;
-        --pressed-color: #4a2d6e;
-        --gradient-start: rgba(184, 90, 230, 0.15);
-        --gradient-end: rgba(184, 90, 230, 0.05);
-        --shadow-color: rgba(26, 13, 42, 0.8);
-        --glow-color: rgba(184, 90, 230, 0.2);
-    }
-
-    html.theme-red {
-        --bg-color: #2a0d0d;
-        --text-color: #ffe8e8;
-        --accent-color: #e65a5a;
-        --hover-color: #401b1b;
-        --border-color: #6e2d2d;
-        --secondary-bg: #3d1414;
-        --secondary-text: #d67e7e;
-        --pressed-color: #6e2d2d;
-        --gradient-start: rgba(230, 90, 90, 0.15);
-        --gradient-end: rgba(230, 90, 90, 0.05);
-        --shadow-color: rgba(42, 13, 13, 0.8);
-        --glow-color: rgba(230, 90, 90, 0.2);
-    }
-
-    /* ============================================
-    GLOBAL ELEMENT NORMALIZATION WITH ENHANCEMENTS
-    ============================================ */
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        -webkit-tap-highlight-color: transparent;
-    }
-
-    html, body {
+      #container {
         width: 100%;
         height: 100%;
-        display: flex;
-        flex-direction: column;
-        background: var(--bg-color) !important;
-        color: var(--text-color);
-        font-family: 'JetBrains Mono', 'Tilt Neon', Consolas, 'Courier New', monospace;
-        overChart: hidden;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        font-weight: 400;
-        letter-spacing: -0.01em;
-        transition: background-color 0.4s var(--transition-smooth),
-                    color 0.4s var(--transition-smooth);
-    }
+      }
 
-    /* Smooth scroll for tab bar */
-    #tab-bar {
-        scroll-behavior: smooth;
-    }
-
-    /* ============================================
-    MAIN LAYOUT CONTAINERS
-    ============================================ */
-    #main-container {
+      #backdrop {
+        position: fixed;
+        left: 0;
+        top: 0;
         width: 100vw;
         height: 100vh;
+        background: rgba(11, 13, 20, 0.5);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        z-index: 1999;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease-out;
+      }
+      #backdrop.open {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      #sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        width: 220px;
+        background: #0b0d14;
+        border-right: 1px solid #2c3240;
+        z-index: 2000;
+        transform: translateX(-100%);
+        transition: transform 0.3s cubic-bezier(0.33, 1, 0.68, 1);
         display: flex;
         flex-direction: column;
-        background: linear-gradient(135deg, var(--bg-color) 0%, var(--secondary-bg) 100%);
-        position: relative;
-        overChart: hidden;
-    }
-
-    #main-container::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: linear-gradient(90deg, 
-            transparent 0%, 
-            var(--accent-color) 50%, 
-            transparent 100%);
-        opacity: 0.3;
-        z-index: 2;
-    }
-
-    #container {
-        width: 100%;
-        height: calc(100vh - 48px);
-        background: transparent !important;
-        position: relative;
-    }
-
-    /* ============================================
-    ENHANCED TAB BAR & TABS
-    ============================================ */
-    #tab-bar {
-        height: 48px;
-        background: linear-gradient(180deg, 
-            rgba(0, 0, 0, 0.2) 0%, 
-            transparent 100%) !important;
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        display: flex;
-        align-items: center;
-        padding: 0 12px 0 6px;
-        gap: 4px;
-        white-space: nowrap;
-        overChart-x: auto;
-        overChart-y: hidden;
-        position: relative;
-        z-index: 10;
-        transition: all 0.3s var(--transition-smooth);
-    }
-
-    #tab-bar::after {
-        content: '';
-        position: absolute;
-        bottom: -1px;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: linear-gradient(90deg, 
-            transparent 0%, 
-            var(--border-color) 50%, 
-            transparent 100%);
-        opacity: 0.5;
-    }
-
-    /* Custom scrollbar for tab bar */
-    #tab-bar::-webkit-scrollbar {
-        height: 4px;
-    }
-
-    #tab-bar::-webkit-scrollbar-track {
-        background: transparent;
-        border-radius: 2px;
-        margin: 0 12px;
-    }
-
-    #tab-bar::-webkit-scrollbar-thumb {
-        background: linear-gradient(90deg, 
-            var(--accent-color) 0%, 
-            var(--secondary-text) 100%);
-        border-radius: 2px;
-        min-width: 40px;
-        opacity: 0.5;
-        transition: opacity 0.3s ease;
-    }
-
-    #tab-bar::-webkit-scrollbar-thumb:hover {
-        opacity: 0.8;
-    }
-
-    .tab {
-        height: 36px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 12px 0 16px;
-        background: var(--secondary-bg);
-        color: var(--secondary-text);
-        border-radius: var(--border-radius-md);
-        margin-right: 4px;
-        min-width: 100px;
-        max-width: 200px;
-        font-size: 13px;
-        font-weight: 450;
-        user-select: none;
-        cursor: pointer;
-        overChart: hidden;
-        text-overChart: ellipsis;
-        white-space: nowrap;
-        font-family: 'JetBrains Mono', 'Tilt Neon', monospace;
-        position: relative;
-        border: 0px solid transparent;
-        transition: all 0.3s var(--transition-smooth);
-        will-change: transform, opacity, background-color;
-        box-shadow: 0 2px 8px var(--shadow-color);
-    }
-
-    .tab:first-child {
-        margin-left: 8px;
-    }
-
-    .tab::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        border-radius: inherit;
-        padding: 1px;
-        background: linear-gradient(135deg, 
-            var(--gradient-start) 0%, 
-            var(--gradient-end) 100%);
-        -webkit-mask: 
-            linear-gradient(#fff 0 0) content-box, 
-            linear-gradient(#fff 0 0);
-        -webkit-mask-composite: xor;
-        mask-composite: exclude;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-
-    .tab:hover::before {
-        opacity: 1;
-    }
-
-    .tab.active {
-        background: linear-gradient(135deg, var(--hover-color) 0%, var(--pressed-color) 100%);
-        color: var(--text-color);
-        transform: translateY(-1px);
-        z-index: 2;
-    }
-
-    .tab.active::before {
-        opacity: 1;
-
-    }
-
-    .tab:hover:not(.active) {
-        background: var(--hover-color);
-        color: var(--text-color);
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px var(--shadow-color);
-    }
-
-    .tab:active {
-        transform: translateY(0);
-        transition: transform 0.1s ease;
-    }
-
-    .tab-name {
-        overChart: hidden;
-        text-overChart: ellipsis;
-        padding-right: 8px;
-        font-weight: 500;
-        letter-spacing: -0.01em;
-    }
-
-    /* Tab close button enhancements */
-    .tab-close {
-        width: 18px;
-        height: 18px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-left: 8px;
-        margin-bottom: 1px;
-        border-radius: 50%;
-        flex-shrink: 0;
-        opacity: 0.5;
-        position: relative;
-        font-size: 14px;
-        color: var(--secondary-text);
-        transition: all 0.2s var(--transition-smooth);
-        will-change: transform, opacity;
+        padding: 16px;
+        gap: 8px;
+        font-family: "Inter", sans-serif;
+      }
+      #sidebar.open {
+        transform: translateX(0);
+      }
+      .sidebar-btn {
         background: transparent;
         border: none;
-        cursor: pointer;
-        font-family: inherit;
-    }
-
-    .tab-close::before {
-        content: "×";
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: 16px;
-        font-weight: 300;
-        line-height: 0;
-    }
-
-    .tab:hover .tab-close {
-        opacity: 1;
-        background: rgba(255, 255, 255, 0.1);
-    }
-
-    .tab-close:hover {
-        opacity: 1 !important;
-        color: var(--text-color);
-        background: rgba(255, 255, 255, 0.2);
-        transform: scale(1.1);
-    }
-
-    .tab-close:active {
-        transform: scale(0.95);
-    }
-
-    /* New tab button enhancements */
-    #new-tab-btn {
-        width: 28px;
-        height: 28px;
-        margin: 0 4px 0 8px;
-        border-radius: var(--border-radius-sm);
-        border: 1px solid var(--border-color);
-        background: var(--secondary-bg);
-        color: var(--secondary-text);
-        font-family: inherit;
-        font-size: 20px;
-        font-weight: 300;
-        cursor: pointer;
+        color: #73A7FF;
         display: flex;
         align-items: center;
-        justify-content: center;
-        transition: all 0.3s var(--transition-smooth);
+        gap: 14px;
+        padding: 10px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-family: "Inter", sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        text-align: left;
+        transition: background-color 0.2s ease, color 0.2s ease;
+        width: 100%;
+      }
+      .sidebar-btn:hover {
+        background-color: #182033;
+        color: #ffffff;
+      }
+      .sidebar-btn svg {
+        width: 20px;
+        height: 20px;
+        stroke: #73A7FF;
         flex-shrink: 0;
-        position: relative;
-        overChart: hidden;
-    }
+        transition: stroke 0.2s ease;
+      }
+      .sidebar-btn:hover svg {
+        stroke: #ffffff;
+      }
 
-    #new-tab-btn::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(135deg, 
-            var(--gradient-start) 0%, 
-            var(--gradient-end) 100%);
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-
-    #new-tab-btn:hover {
-        color: var(--text-color);
-        border-color: var(--accent-color);
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px var(--shadow-color);
-    }
-
-    #new-tab-btn:hover::before {
-        opacity: 1;
-    }
-
-    #new-tab-btn:active {
-        transform: translateY(0);
-        transition: transform 0.1s ease;
-    }
-
-    /* ============================================
-    ENHANCED CONTEXT MENU
-    ============================================ */
-    .context-menu {
-        min-width: 160px;
-        padding: 6px;
-        background: var(--secondary-bg);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border-radius: var(--border-radius-lg);
-        border: 1px solid var(--border-color);
-        box-shadow: 
-            0 8px 32px var(--shadow-color),
-            0 0 0 1px rgba(255, 255, 255, 0.1);
-        animation: slideIn 0.2s var(--transition-smooth) forwards;
-        z-index: 1000;
-        overChart: hidden;
-    }
-
-    .context-menu::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(135deg, 
-            rgba(255, 255, 255, 0.1) 0%, 
-            transparent 100%);
-        pointer-events: none;
-        border-radius: inherit;
-    }
-
-    .menu-item {
-        padding: 10px 14px;
-        border-radius: var(--border-radius-sm);
-        font-size: 13px;
-        cursor: pointer;
-        color: var(--text-color);
-        font-family: 'JetBrains Mono', sans-serif;
-        transition: all 0.2s var(--transition-smooth);
-        position: relative;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-weight: 450;
-        letter-spacing: -0.01em;
-    }
-
-    .menu-item:hover {
-        background: var(--hover-color);
-        color: var(--accent-color);
-        padding-left: 18px;
-    }
-
-    .menu-item::before {
-        content: '';
-        position: absolute;
-        left: 6px;
-        width: 3px;
-        height: 3px;
-        background: var(--accent-color);
-        border-radius: 50%;
-        opacity: 0;
-        transition: opacity 0.2s ease;
-    }
-
-    .menu-item:hover::before {
-        opacity: 1;
-    }
-
-    /* ============================================
-    ENHANCED TOAST NOTIFICATIONS
-    ============================================ */
-    .toast-container {
+      .toast-container {
         position: fixed;
-        top: 20px;
-        right: 20px;
+        bottom: 10px;
+        right: 10px;
         z-index: 9999;
+      }
+      .toast {
+        padding: 12px 16px;
+        margin: 8px;
+        border-radius: 6px;
+        color: white;
+        font-family: "Inter", sans-serif;
+        font-size: 11px;
+        opacity: 0;
+        transform: translateX(50px);
+        filter: blur(8px);
+        transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        background-color: rgba(59, 130, 246, 0.9);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        max-width: 180px; 
+        width: fit-content; 
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translateX(0);
+        filter: blur(0);
+      }
+      .toast .toast-title {
+        font-weight: 600;
+        margin-bottom: 6px;
+        color: #fff;
+      }
+      .toast .toast-code {
+        background: rgba(0,0,0,0.3);
+        border-radius: 4px;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 8px;
+        padding: 6px 8px;
+        white-space: pre;     
+        overflow-x: auto;      
+        max-height: 160px;      
+      }
+
+      #main-container {
         display: flex;
         flex-direction: column;
-        gap: 12px;
-        pointer-events: none;
-    }
+        height: 100vh;
+        width: 100vw;
+      }
+    </style>
+  </head>
 
-    .toast {
-        position: relative;
-        margin: 0;
-        padding: 16px 24px 16px 52px;
-        border-radius: var(--border-radius-lg);
-        font-size: 14px;
-        font-family: 'JetBrains Mono', sans-serif;
-        opacity: 0;
-        transform: translateX(80px) scale(0.9);
-        filter: blur(4px);
-        transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        pointer-events: auto;
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        min-width: 180px;
-        font-weight: 450;
-        letter-spacing: -0.01em;
-        overChart: hidden;
-    }
-
-    .toast::before {
-        content: "";
-        position: absolute;
-        left: 16px;
-        top: 50%;
-        width: 24px;
-        height: 24px;
-        transform: translateY(-50%);
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center;
-        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
-    }
-
-    .toast::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(135deg, 
-            rgba(255, 255, 255, 0.1) 0%, 
-            transparent 100%);
-        pointer-events: none;
-        border-radius: inherit;
-    }
-
-    .toast.success {
-        background: linear-gradient(135deg, 
-            rgba(34, 197, 94, 0.9) 0%, 
-            rgba(21, 128, 61, 0.9) 100%);
-        box-shadow: 
-            0 8px 32px rgba(34, 197, 94, 0.3),
-            0 0 0 1px rgba(255, 255, 255, 0.2);
-    }
-
-    .toast.error {
-        background: linear-gradient(135deg, 
-            rgba(239, 68, 68, 0.9) 0%, 
-            rgba(185, 28, 28, 0.9) 100%);
-        box-shadow: 
-            0 8px 32px rgba(239, 68, 68, 0.3),
-            0 0 0 1px rgba(255, 255, 255, 0.2);
-    }
-
-    .toast.show {
-        opacity: 1;
-        transform: translateX(0) scale(1);
-        filter: blur(0);
-    }
-
-    .toast.hide {
-        opacity: 0;
-        transform: translateX(80px) scale(0.9);
-        filter: blur(4px);
-    }
-
-    /* Progress bar for toast */
-    .toast .progress {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        height: 3px;
-        background: rgba(255, 255, 255, 0.5);
-        border-radius: 0 0 var(--border-radius-lg) var(--border-radius-lg);
-        animation: progressBar 3s linear forwards;
-    }
-
-    /* ============================================
-    ENHANCED ANIMATIONS
-    ============================================ */
-    @keyframes fadeIn {
-        from { 
-            opacity: 0; 
-            transform: translateY(-10px); 
-        }
-        to { 
-            opacity: 1; 
-            transform: translateY(0); 
-        }
-    }
-
-    @keyframes fadeOut {
-        from { 
-            opacity: 1; 
-            transform: translateY(0); 
-        }
-        to { 
-            opacity: 0; 
-            transform: translateY(-10px); 
-        }
-    }
-
-    @keyframes slideIn {
-        from { 
-            opacity: 0; 
-            transform: translateY(-20px) scale(0.95); 
-        }
-        to { 
-            opacity: 1; 
-            transform: translateY(0) scale(1); 
-        }
-    }
-
-    @keyframes tabSlideRight {
-        from { 
-            transform: translateX(-30px) scale(0.9); 
-            opacity: 0; 
-        }
-        to { 
-            transform: translateX(0) scale(1); 
-            opacity: 1; 
-        }
-    }
-
-    @keyframes tabEnter {
-        0% { 
-            transform: scale(0.8) translateY(10px); 
-            opacity: 0; 
-        }
-        70% { 
-            transform: scale(1.05) translateY(-2px); 
-            opacity: 0.8; 
-        }
-        100% { 
-            transform: scale(1) translateY(0); 
-            opacity: 1; 
-        }
-    }
-
-    @keyframes progressBar {
-        from { width: 100%; }
-        to { width: 0%; }
-    }
-
-    @keyframes glowPulse {
-        0%, 100% { 
-            box-shadow: 
-                0 4px 16px var(--shadow-color),
-                0 0 0 1px var(--accent-color),
-                0 0 20px var(--glow-color);
-        }
-        50% { 
-            box-shadow: 
-                0 4px 24px var(--shadow-color),
-                0 0 0 1px var(--accent-color),
-                0 0 30px var(--glow-color);
-        }
-    }
-
-    /* Animation classes */
-    .tab-fade-out {
-        animation: fadeOut 0.2s var(--transition-smooth) forwards;
-        pointer-events: none;
-    }
-
-    .tab-slide-right {
-        animation: tabSlideRight 0.3s var(--transition-smooth) forwards;
-    }
-
-    .tab-enter-animate {
-        animation: tabEnter 0.4s var(--transition-smooth) forwards;
-    }
-
-    .active-glow {
-        animation: glowPulse 2s ease-in-out infinite;
-    }
-
-    /* ============================================
-    MICRO-INTERACTIONS & HOVER EFFECTS
-    ============================================ */
-    .tab:hover .tab-name {
-        animation: textSlide 0.3s ease;
-    }
-
-    @keyframes textSlide {
-        0% { transform: translateX(0); }
-        50% { transform: translateX(2px); }
-        100% { transform: translateX(0); }
-    }
-
-    /* Smooth focus outlines */
-    *:focus {
-        outline: 2px solid var(--accent-color);
-        outline-offset: 2px;
-        border-radius: 4px;
-    }
-
-    *:focus:not(.tab, .tab-close, #new-tab-btn) {
-        outline: none;
-    }
-
-    /* Loading skeleton for tabs */
-    .tab-loading {
-        position: relative;
-        overChart: hidden;
-    }
-
-    .tab-loading::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(90deg,
-            transparent 0%,
-            rgba(255, 255, 255, 0.1) 50%,
-            transparent 100%);
-        animation: loadingShimmer 1.5s infinite;
-    }
-
-    @keyframes loadingShimmer {
-        0% { transform: translateX(-100%); }
-        100% { transform: translateX(100%); }
-    }
-
-    /* ============================================
-    RESPONSIVE ENHANCEMENTS
-    ============================================ */
-    @media (max-width: 768px) {
-        .tab {
-            min-width: 80px;
-            max-width: 150px;
-            padding: 0 8px 0 12px;
-            font-size: 12px;
-        }
-        
-        .tab-close {
-            width: 16px;
-            height: 16px;
-            margin-left: 4px;
-        }
-        
-        #new-tab-btn {
-            width: 24px;
-            height: 24px;
-            font-size: 18px;
-        }
-        
-        .toast {
-            max-width: 280px;
-            padding: 14px 20px 14px 48px;
-            font-size: 13px;
-        }
-    }
-
-    @media (max-width: 480px) {
-        #tab-bar {
-            height: 44px;
-            padding: 0 8px 0 4px;
-        }
-        
-        .tab {
-            height: 32px;
-            min-width: 70px;
-            max-width: 120px;
-            font-size: 11px;
-            border-radius: 10px;
-        }
-        
-        .context-menu {
-            min-width: 140px;
-            font-size: 12px;
-        }
-        
-        .menu-item {
-            padding: 8px 12px;
-            font-size: 12px;
-        }
-    }
-</style>
-</head>
-<body>
+  <body>
     <div id="main-container">
-        <div class="toast-container"></div>
-        <div id="tab-bar">
-            <div id="new-tab-btn">+</div>
-        </div>
-        <div id="container" style="width: 100%; height: calc(100vh - 40px);"></div>
+      <div class="toast-container"></div>
+      <div id="container"></div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs/loader.min.js"></script>
+    
+    <div id="backdrop"></div>
+    <div id="sidebar">
+      <button class="sidebar-btn" data-nav="Home">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 9.22222V21H21V9.22222L12 3L3 9.22222Z" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/><path d="M9 21V12H15V21" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Home</span>
+      </button>
+      <button class="sidebar-btn" data-nav="Editor">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 8L3 12L7 16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 8L21 12L17 16" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 4L10 20" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Editor</span>
+      </button>
+      <button class="sidebar-btn" data-nav="ScripHub">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 16V8C21 7.46957 20.7893 6.96086 20.4142 6.58579C20.0391 6.21071 19.5304 6 19 6H5C4.46957 6 3.96086 6.21071 3.58579 6.58579C3.21071 6.96086 3 7.46957 3 8V16C3 16.5304 3.21071 17.0391 3.58579 17.4142C3.96086 17.7893 4.46957 18 5 18H19C19.5304 18 20.0391 17.7893 20.4142 17.4142C20.7893 17.0391 21 16.5304 21 16Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 10L12 14L21 10" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 6V14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>ScripHub</span>
+      </button>
+      <button class="sidebar-btn" data-nav="Settings">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M19.4 15L19.4 15C19.8242 14.6543 20.1743 14.2127 20.421 13.714C20.6677 13.2153 20.8049 12.6739 20.824 12.12C20.8431 11.5661 20.7439 11.0123 20.5338 10.5056C20.3238 9.99882 20.0076 9.55169 19.6 9.2L19.6 9.2C19.2312 8.89945 18.788 8.70515 18.318 8.64333C17.848 8.58151 17.3712 8.65529 16.94 8.855C16.5088 9.05471 16.1387 9.37332 15.865 9.775C15.5913 10.1767 15.424 10.647 15.38 11.14L15.38 11.14M9.62 12.86L9.62 12.86C9.57599 13.353 9.40875 13.8233 9.13503 14.225C8.86131 14.6267 8.49122 14.9453 8.06 15.145C7.62878 15.3447 7.15199 15.4185 6.682 15.3567C6.21201 15.2949 5.76878 15.1005 5.4 14.8L5.4 14.8C5.00762 14.4483 4.6762 14.0012 4.432 13.4944C4.18781 12.9877 4.03791 12.434 3.996 11.87C3.95408 11.306 4.02213 10.7423 4.195 10.225C4.36787 9.70773 4.64092 9.24838 5 8.86L5 8.86C5.36878 8.50055 5.81201 8.30616 6.282 8.24434C6.75199 8.18252 7.22878 8.2563 7.66 8.456C8.09122 8.65571 8.46131 8.97432 8.73503 9.376C9.00875 9.77768 9.17599 10.248 9.22 10.74L9.22 10.74M12.86 15.38L12.86 15.38C13.353 15.424 13.8233 15.5913 14.225 15.865C14.6267 16.1387 14.9453 16.5088 15.145 16.94C15.3447 17.3712 15.4185 17.848 15.3567 18.318C15.2949 18.788 15.1005 19.2312 14.8 19.6L14.8 19.6C14.4483 19.9924 14.0012 20.3238 13.4944 20.568C12.9877 20.8122 12.434 20.9621 11.87 21.004C11.306 21.0459 10.7423 20.9779 10.225 20.805C9.70773 20.6321 9.24838 20.3591 8.86 20L8.86 20C8.50055 19.6312 8.30616 19.188 8.24434 18.718C8.18252 18.248 8.2563 17.7712 8.456 17.34C8.65571 16.9088 8.97432 16.5387 9.376 16.265C9.77768 15.9913 10.248 15.824 10.74 15.78L10.74 15.78M11.14 9.22L11.14 9.22C11.593 9.17599 12.0633 9.00875 12.465 8.73503C12.8667 8.46131 13.1853 8.09122 13.385 7.66C13.5847 7.22878 13.6585 6.75199 13.5967 6.282C13.5349 5.81201 13.3405 5.36878 13.04 5L13.04 5C12.6883 4.60762 12.2412 4.2762 11.7344 4.032C11.2277 3.78781 10.674 3.63791 10.11 3.596C9.54602 3.55408 8.98234 3.62213 8.46503 3.795C7.94773 3.96787 7.48838 4.24092 7.1 4.6L7.1 4.6C6.70055 4.96878 6.50616 5.41201 6.44434 5.882C6.38252 6.35199 6.4563 6.82878 6.656 7.26C6.85571 7.69122 7.17432 8.06131 7.576 8.33503C7.97768 8.60875 8.44801 8.77599 8.94 8.82L8.94 8.82" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Settings</span>
+      </button>
+    </div>
+
+    <script src="https://unpkg.com/luaparse@0.3.1/luaparse.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+
     <script type="text/javascript">
-        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.33.0/min/vs' } });
+      window.addEventListener("load", function () {
+        // --- Sidebar Logic ---
+        const sidebar = document.getElementById("sidebar");
+        const backdrop = document.getElementById("backdrop");
+        const sidebarButtons = document.querySelectorAll(".sidebar-btn");
 
-        let editor, activeTab = null, tabs = [], tabCount = 0, scriptCounter = 1;
-        let saveTimeout = null;
-
-        function updateMonacoTheme() {
-            if (typeof monaco === 'undefined' || typeof monaco.editor === 'undefined') return;
-
-            const computedStyle = getComputedStyle(document.documentElement);
-            const bgColor = computedStyle.getPropertyValue('--bg-color').trim();
-            const textColor = computedStyle.getPropertyValue('--text-color').trim();
-            const secondaryText = computedStyle.getPropertyValue('--secondary-text').trim();
-            const secondaryBg = computedStyle.getPropertyValue('--secondary-bg').trim();
-            const borderColor = computedStyle.getPropertyValue('--border-color').trim();
-            const hoverColor = computedStyle.getPropertyValue('--hover-color').trim();
-            const accentColor = computedStyle.getPropertyValue('--accent-color').trim();
-            const pressedColor = computedStyle.getPropertyValue('--pressed-color').trim();
-            
-            monaco.editor.defineTheme('CustomTheme', {
-                base: 'vs-dark',
-                inherit: true,
-                rules: [
-                    { token: '', foreground: textColor.substring(1) },
-                    { token: 'keyword', foreground: '#569cd6', fontStyle: 'bold' },
-                    { token: 'string', foreground: accentColor.substring(1) },
-                    { token: 'number', foreground: '#b5cea8' },
-                    { token: 'function', foreground: '#dcdcaa' },
-                    { token: 'support.function', foreground: '#dcdcaa' },
-                    { token: 'variable', foreground: textColor.substring(1) },
-                    { token: 'operator', foreground: textColor.substring(1) },
-                    { token: 'delimiter', foreground: textColor.substring(1) },
-                    { token: 'type', foreground: textColor.substring(1) },
-                    { token: 'constant', foreground: '#b5cea8' },
-                    { token: 'identifier', foreground: textColor.substring(1) },
-                    { token: 'entity.name.function', foreground: '#dcdcaa' },
-                    { token: 'punctuation', foreground: textColor.substring(1) },
-                    { token: 'library', foreground: '#4ec9b0' },
-                    { token: 'constant.language', foreground: '#d8a0df' }
-                ],
-                colors: {
-                    'editor.background': bgColor, 
-                    'editor.foreground': textColor,
-                    'editorLineNumber.foreground': secondaryText,
-                    'editorLineNumber.activeForeground': textColor,
-                    'editorIndentGuide.background': hoverColor,
-                    'editorIndentGuide.activeBackground': accentColor,
-                    'editorSuggestWidget.background': secondaryBg,
-                    'editorSuggestWidget.border': borderColor,
-                    'editorSuggestWidget.foreground': textColor,
-                    'editorSuggestWidget.selectedBackground': hoverColor,
-                    'editorSuggestWidget.highlightForeground': accentColor,
-                    'editor.selectionBackground': '#264f78',
-                    'editor.selectionHighlightBackground': pressedColor,
-                    'scrollbarSlider.background': secondaryBg,
-                    'scrollbarSlider.hoverBackground': hoverColor,
-                    'scrollbarSlider.activeBackground': pressedColor,
-                    'editorCursor.foreground': accentColor
-                }
-            });
-
-            if (editor) {
-                monaco.editor.setTheme('CustomTheme');
-            }
+        window.openNav = function() { 
+            sidebar.classList.add("open");
+            backdrop.classList.add("open");
         }
 
-function applyTheme(themeData) {
-            console.log('Applying theme data:', themeData);
-            const html = document.documentElement;
-
-            html.className = '';
-            html.style.cssText = '';
-            if (typeof themeData === 'string') {
-                if (themeData !== 'default') {
-                    html.classList.add(`theme-${themeData}`);
-                }
-            }
-            else if (typeof themeData === 'object' && themeData.type === 'custom' && themeData.colors) {
-                for (const [key, value] of Object.entries(themeData.colors)) {
-                    html.style.setProperty(key, value);
-                }
-            }
-            
-            updateMonacoTheme();
-        }
-
-        window.applyTheme = applyTheme;
-
-        function showToast(message, type) {
-            const container = document.querySelector('.toast-container');
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.textContent = message;
-            container.appendChild(toast);
-            toast.offsetHeight;
-            setTimeout(() => toast.classList.add('show'), 10);
-            setTimeout(() => {
-                toast.classList.add('hide');
-                setTimeout(() => container.removeChild(toast), 400);
-            }, 3000);
-        }
-
-        class Tab {
-            constructor(content = `--[[        Chart Executor        ]]--`, name = `Script ${scriptCounter++}`, id = `tab-${Date.now()}`) {
-                this.id = id;
-                this.name = name;
-                this.content = content;
-                tabCount++;
-                this.number = tabCount;
-                this.element = this.createTabElement();
-            }
-
-            createTabElement() {
-                const tabElement = document.createElement('div');
-                tabElement.className = 'tab tab-enter-animate tab-slide-right';
-                tabElement.innerHTML = `<span class="tab-name">${this.name}</span><span class="tab-close"></span>`;
-                setTimeout(() => {
-                    tabElement.classList.remove('tab-enter-animate', 'tab-slide-right');
-                }, 300);
-
-                const attachEventListeners = () => {
-                    const nameElement = tabElement.querySelector('.tab-name');
-                    const closeElement = tabElement.querySelector('.tab-close');
-                    tabElement.removeEventListener('click', this.tabClickHandler);
-                    tabElement.removeEventListener('contextmenu', this.contextMenuHandler);
-                    nameElement.removeEventListener('dblclick', this.renameHandler);
-                    closeElement.removeEventListener('click', this.closeHandler);
-
-                    this.tabClickHandler = (e) => {
-                        if (!e.target.classList.contains('tab-close')) {
-                            activateTab(this);
-                        }
-                    };
-                    this.contextMenuHandler = (event) => {
-                        event.preventDefault();
-                        document.querySelectorAll('.context-menu').forEach(menu => menu.remove());
-                        const contextMenu = document.createElement('div');
-                        contextMenu.className = 'context-menu';
-                        contextMenu.innerHTML = `
-                                    <div class="menu-item rename-item">Rename</div>
-                                    <div class="menu-item close-item">Close</div>
-                                `;
-                        contextMenu.style.position = 'fixed';
-                        contextMenu.style.left = `${event.clientX}px`;
-                        contextMenu.style.top = `${event.clientY}px`;
-                        document.body.appendChild(contextMenu);
-
-                        contextMenu.querySelector('.rename-item').addEventListener('click', (e) => {
-                            e.stopPropagation();
-                            startRenameProcess();
-                            contextMenu.remove();
-                        }, { once: true });
-
-                        contextMenu.querySelector('.close-item').addEventListener('click', (e) => {
-                            e.stopPropagation();
-                            if (tabCount > 1) {
-                                closeTab(this);
-                                tabCount--;
-                            }
-                            contextMenu.remove();
-                        }, { once: true });
-
-                        document.addEventListener('click', () => contextMenu.remove(), { once: true });
-                    };
-                    this.renameHandler = () => startRenameProcess();
-                    this.closeHandler = (event) => {
-                        event.stopPropagation();
-                        if (tabCount > 1) {
-                            closeTab(this);
-                            tabCount--;
-                        }
-                    };
-
-                    nameElement.addEventListener('dblclick', this.renameHandler, { once: false });
-                    tabElement.addEventListener('click', this.tabClickHandler, { once: false });
-                    closeElement.addEventListener('click', this.closeHandler, { once: false });
-                    tabElement.addEventListener('contextmenu', this.contextMenuHandler, { once: false });
-                };
-
-                let renameTimeout = null;
-                const startRenameProcess = () => {
-                    if (renameTimeout) clearTimeout(renameTimeout);
-                    renameTimeout = setTimeout(() => {
-                        const nameElement = tabElement.querySelector('.tab-name');
-                        if (nameElement.tagName === 'INPUT') return;
-                        const inputElement = document.createElement('input');
-                        inputElement.value = this.name;
-                        inputElement.style.cssText = 'width:80px;background:transparent;border:none;color:var(--text-color);outline:none;font-family:"Tilt Neon",Consolas,"Courier New",monospace;font-size:14.5px;padding:0;box-sizing:border-box;';
-                        nameElement.replaceWith(inputElement);
-                        inputElement.focus();
-                        inputElement.select();
-
-                        const finishRenaming = () => {
-                            this.name = inputElement.value || 'Untitled';
-                            const newNameElement = document.createElement('span');
-                            newNameElement.className = 'tab-name';
-                            newNameElement.textContent = this.name;
-                            inputElement.replaceWith(newNameElement);
-                            tabElement.style.cssText = '';
-                            attachEventListeners();
-                            
-                        };
-
-                        inputElement.addEventListener('blur', finishRenaming, { once: true });
-                        inputElement.addEventListener('keydown', (event) => {
-                            if (event.key === 'Enter') finishRenaming();
-                            if (event.key === 'Escape') {
-                                inputElement.value = this.name;
-                                finishRenaming();
-                            }
-                        }, { once: true });
-                    }, 200);
-                };
-
-                attachEventListeners();
-                return tabElement;
-            }
-        }
-
-        function createNewTab() {
-            const tab = new Tab();
-            tabs.push(tab);
-            const tabBar = document.getElementById('tab-bar');
-            const newTabBtn = document.getElementById('new-tab-btn');
-            tabBar.insertBefore(tab.element, newTabBtn);
-            activateTab(tab);
-            
-            tabBar.scrollLeft = tabBar.scrollWidth;
-        }
-
-        function closeTab(tab) {
-            if (tabs.length <= 1) {
-                showToast('Cannot close the last tab!', 'error');
-                return;
-            }
-            tab.element.classList.add('tab-fade-out');
-            setTimeout(() => {
-                if (!tabs.includes(tab)) return;
-                const tabIndex = tabs.indexOf(tab);
-                if (tabIndex > -1) {
-                    tabs.splice(tabIndex, 1);
-                    tab.element.remove();
-                    if (tab === activeTab) {
-                        activeTab = null;
-                        if (tabs.length > 0) {
-                            const nextTab = tabs[Math.max(0, tabIndex - 1)];
-                            activateTab(nextTab);
-                        } else {
-                            editor.setValue('');
-                        }
-                    }
-                    saveTabsToLocalStorage();
-                }
-            }, 150);
-        }
-
-        let transitionTimeout = null;
-
-        function activateTab(tab) {
-            if (activeTab === tab) return;
-            const editorContainer = document.getElementById('container');
-            if (activeTab) {
-                activeTab.element.classList.remove('active');
-                activeTab.content = editor.getValue();
-                editorContainer.classList.add('tab-transition-out');
-            }
-            if (transitionTimeout) clearTimeout(transitionTimeout);
-            transitionTimeout = setTimeout(() => {
-                editorContainer.classList.remove('tab-transition-out');
-                activeTab = tab;
-                tab.element.classList.add('active');
-                editor.setValue(tab.content);
-                editorContainer.classList.add('tab-transition-in');
-                setTimeout(() => editorContainer.classList.remove('tab-transition-in'), 0);
-            }, 100);
-        }
-
-        function saveTabsToLocalStorage() {
-            if (saveTimeout) clearTimeout(saveTimeout);
-            saveTimeout = setTimeout(() => {
-                const tabData = tabs.map(tab => ({
-                    id: tab.id,
-                    name: tab.name,
-                    content: tab.content
-                }));
-                localStorage.setItem('editorTabs', JSON.stringify(tabData));
-                localStorage.setItem('scriptCounter', scriptCounter.toString());
-            }, 200);
-        }
-
-        function loadTabsFromLocalStorage() {
-            try {
-                const savedTabs = localStorage.getItem('editorTabs');
-                const savedScriptCounter = localStorage.getItem('scriptCounter');
-                if (savedScriptCounter) {
-                    scriptCounter = parseInt(savedScriptCounter) || 1;
-                }
-                if (savedTabs) {
-                    const tabData = JSON.parse(savedTabs);
-                    if (Array.isArray(tabData) && tabData.length > 0) {
-                        tabData.forEach(tab => {
-                            if (tab.id && tab.name && tab.content) {
-                                const newTab = new Tab(tab.content, tab.name, tab.id);
-                                tabs.push(newTab);
-                                document.getElementById('tab-bar').insertBefore(newTab.element, document.getElementById('new-tab-btn'));
-                            }
-                        });
-                        if (tabs.length > 0) {
-                            activateTab(tabs[0]);
-                            return;
-                        }
-                    }
-                }
-                createNewTab();
-            } catch (e) {
-                console.error('Failed to load tabs from localStorage:', e);
-                createNewTab();
-            }
-        }
-
-        function handleMessage(data) {
-             if (typeof data === 'string') {
-                try {
-                    data = JSON.parse(data);
-                } catch (e) {
-                    console.error('Failed to parse message:', e);
-                    return;
-                }
-            }
-            if (data.type === "themeChange" && typeof data.theme === "string") {
-                applyTheme(data.theme);
-            }
-        }
-
-        function setupMessageHandlers() {
-            if (window.chrome && window.chrome.webview) {
-                window.chrome.webview.addEventListener('message', event => handleMessage(event.data));
-            }
-            window.addEventListener('message', event => handleMessage(event.data));
+        window.closeNav = function() { 
+            sidebar.classList.remove("open");
+            backdrop.classList.remove("open");
+            sidebarButtons.forEach(btn => btn.classList.remove("selected"));
         }
         
-        require(['vs/editor/editor.main'], function () {
-            
-            updateMonacoTheme();
-            require(['vs/basic-languages/lua/lua'], function () {
-                monaco.languages.registerCompletionItemProvider('lua', {
-                    provideCompletionItems: function (model, position) {
-                        const word = model.getWordUntilPosition(position);
-                        const prefix = word.word.toLowerCase();
-                        const suggestions = [
-                            { label: 'print', kind: monaco.languages.CompletionItemKind.Function, insertText: 'print(${1})', documentation: 'Outputs a message to the console' },
-                            { label: 'printidentity', kind: monaco.languages.CompletionItemKind.Function, insertText: 'printidentity(${1})', documentation: 'Prints identity information' },
-                            { label: 'printidentify', kind: monaco.languages.CompletionItemKind.Function, insertText: 'printidentify(${1})', documentation: 'Identifies and prints details' },
-                            { label: 'executor', kind: monaco.languages.CompletionItemKind.Function, insertText: 'executor(${1})', documentation: 'Executes a command or script' },
-                            { label: 'local', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'local ${1}', documentation: 'Declares a local variable' },
-                            { label: 'function', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'function ${1}()\n\t${2}\nend', documentation: 'Defines a function' },
-                            { label: 'if', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'if ${1} then\n\t${2}\nend', documentation: 'Conditional statement' },
-                            { label: 'else', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'else\n\t${1}', documentation: 'Alternative condition' },
-                            { label: 'elseif', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'elseif ${1} then\n\t${2}', documentation: 'Additional condition' },
-                            { label: 'for', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'for ${1} = ${2}, ${3} do\n\t${4}\nend', documentation: 'Loop over a range' },
-                            { label: 'while', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'while ${1} do\n\t${2}\nend', documentation: 'Loop while condition is true' },
-                            { label: 'return', kind: monaco.languages.CompletionItemKind.Keyword, insertText: 'return ${1}', documentation: 'Returns a value' },
-                            { label: 'assert', kind: monaco.languages.CompletionItemKind.Function, insertText: 'assert(${1})', documentation: 'Asserts a condition' },
-                            { label: 'dofile', kind: monaco.languages.CompletionItemKind.Function, insertText: 'dofile(${1})', documentation: 'Executes a file' },
-                            { label: 'getmetatable', kind: monaco.languages.CompletionItemKind.Function, insertText: 'getmetatable(${1})', documentation: 'Gets the metatable of an object' },
-                            { label: 'pairs', kind: monaco.languages.CompletionItemKind.Function, insertText: 'pairs(${1})', documentation: 'Iterates over table key-value pairs' },
-                            { label: 'ipairs', kind: monaco.languages.CompletionItemKind.Function, insertText: 'ipairs(${1})', documentation: 'Iterates over table indices' },
-                            { label: 'tonumber', kind: monaco.languages.CompletionItemKind.Function, insertText: 'tonumber(${1})', documentation: 'Converts to a number' },
-                            { label: 'tostring', kind: monaco.languages.CompletionItemKind.Function, insertText: 'tostring(${1})', documentation: 'Converts to a string' },
-                            { label: 'type', kind: monaco.languages.CompletionItemKind.Function, insertText: 'type(${1})', documentation: 'Returns the type of a value' },
-                            { label: 'hookfunction', kind: monaco.languages.CompletionItemKind.Function, insertText: 'hookfunction(${1}, ${2})', documentation: 'Hooks a function' },
-                            { label: 'getgenv', kind: monaco.languages.CompletionItemKind.Function, insertText: 'getgenv()', documentation: 'Gets global environment' },
-                            { label: 'getrenv', kind: monaco.languages.CompletionItemKind.Function, insertText: 'getrenv()', documentation: 'Gets Roblox environment' },
-                            { label: 'isexecutorclosure', kind: monaco.languages.CompletionItemKind.Function, insertText: 'isexecutorclosure(${1})', documentation: 'Checks if a function is an executor closure' },
-                            { label: 'setclipboard', kind: monaco.languages.CompletionItemKind.Function, insertText: 'setclipboard(${1})', documentation: 'Sets clipboard content' }
-                        ].filter(s => s.label.toLowerCase().startsWith(prefix));
-                        return { suggestions };
-                    },
-                    triggerCharacters: ['.', ':', '"', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
-                });
+        sidebarButtons.forEach(button => {
+            button.addEventListener("click", (event) => {
+                sidebarButtons.forEach(btn => btn.classList.remove("selected"));
+                const clickedButton = event.currentTarget;
+                clickedButton.classList.add("selected");
+                const navItem = clickedButton.dataset.nav;
+                
+                if (window.CefSharp && CefSharp.PostMessage) {
+                    CefSharp.PostMessage({ type: 'navClick', item: navItem });
+                }
+                setTimeout(closeNav, 200); 
+            });
+        });
 
-                editor = monaco.editor.create(document.getElementById('container'), {
-                    value: '',
-                    language: 'lua',
-                    theme: 'CustomTheme',
-                    fontSize: 15,
-                    fontFamily: "'Tilt Neon', Consolas, 'Courier New', monospace",
-                    folding: true,
-                    dragAndDrop: true,
-                    links: true,
-                    minimap: { enabled: true },
-                    showFoldingControls: 'always',
-                    smoothScrolling: true,
-                    cursorBlinking: 'smooth',
-                    cursorSmoothCaretAnimation: 'on',
-                    foldingHighlight: true,
-                    fontLigatures: true,
-                    formatOnPaste: true,
-                    showDeprecated: true,
-                    suggest: { snippetsPreventQuickSuggestions: false },
-                    padding: { top: 5, left: 0 },
-                    lineNumbers: 'on',
-                    lineNumbersMinChars: 3,
-                    scrollBeyondLastLine: false
-                });
+        backdrop.addEventListener("click", closeNav);
+      });
 
-                editor.getModel().updateOptions({ insertSpaces: false });
-                editor.onDidChangeModelContent(() => {
-                    if (activeTab) {
-                        activeTab.content = editor.getValue();
-                        saveTabsToLocalStorage();
-                    }
-                });
+      // Default Script Content
+      const defaultContent = `--[[ Chart Executor - 99 UNC ]]--`;
 
-                document.getElementById('new-tab-btn').addEventListener('click', createNewTab);
-                loadTabsFromLocalStorage();
 
-                window.onresize = function () {
+      // Configure RequireJS to load Monaco from CDN
+      require.config({
+        paths: {
+          vs: "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs",
+        },
+      });
+
+      var GetText;
+      var SetText;
+      var SetScroll;
+      var ShowError;
+      var Refresh;
+      var SwitchMinimap;
+      var SwitchReadonly;
+      var SwitchRenderWhitespace;
+      var SwitchLinks;
+      var SwitchLineHeight;
+      var SwitchFontSize;
+      var SwitchFolding;
+      var SwitchAutoIndent;
+      var SwitchFontFamily;
+      var SwitchFontLigatures;
+      var AddIntellisense;
+      var editor;
+      var Proposals = [];
+
+      require(["vs/editor/editor.main"], function () {
+        function getDependencyProposals() {
+          let newProposals = [];
+          for (let index = 0; index < Proposals.length; index++) {
+            const element = Proposals[index];
+            let newElement = {};
+            for (const key in element) {
+              if (key == "__children__") {
+                continue;
+              }
+              newElement[key] = element[key];
+            }
+            newProposals.push(newElement);
+          }
+          return newProposals;
+        }
+	
+	 window.onresize = function () {
                     editor.layout();
                 };
 
@@ -1231,32 +284,286 @@ function applyTheme(themeData) {
                         saveTabsToLocalStorage();
                     }
                 };
-            });
+        // --- NEW SINGLE THEME (Light Red) ---
+        monaco.editor.defineTheme("custom-blue", {
+  base: "vs-dark",
+  inherit: true,
+  rules: [
+    { token: "keyword", foreground: "73A7FF", fontStyle: "bold" },
+    { token: "string", foreground: "9DBDFF" },
+    { token: "number", foreground: "73A7FF" },
+    { token: "comment", foreground: "404f80" },
+    { token: "variable", foreground: "73A7FF" },
+    { token: "entity.name.function", foreground: "73A7FF", fontStyle: "bold" },
+    { token: "delimiter", foreground: "73A7FF" }
+  ],
+  colors: {
+    "editor.background": "#0b0d14",
+    "editor.foreground": "#73A7FF",
+    "editorLineNumber.foreground": "#2b3f6d",
+    "editorLineNumber.activeForeground": "#73A7FF",
+    "editor.lineHighlightBackground": "#141c2e",
+    "editor.lineHighlightBorder": "#222f4d",
+    "editorCursor.foreground": "#73A7FF",
+    "editor.selectionBackground": "#73A7FF33",
+    "editorSuggestWidget.background": "#141c2e",
+    "editorSuggestWidget.border": "#222f4d",
+    "editorSuggestWidget.foreground": "#73A7FF",
+    "editorSuggestWidget.selectedBackground": "#222f4d"
+  }
+});
 
-            window.addEventListener('load', () => {
-                setupMessageHandlers();
-                setTimeout(() => showToast('Chart loaded!', 'success'), 1500);
-            });
-// Send the current script to the executor
-window.SendScript = function() {
-    if (!activeTab) return;
 
-    const scriptContent = activeTab.content;
-    console.log('Sending script:', scriptContent); // debug
+        require(["vs/basic-languages/monaco.contribution"], function () {
+          monaco.languages.registerCompletionItemProvider("lua", {
+            provideCompletionItems: function (model, position) {
+              return {
+                suggestions: getDependencyProposals(),
+              };
+            },
+            triggerCharacters: [".", ":", '"'],
+          });
+          
+          // Initialize Editor (Single Instance)
+          editor = monaco.editor.create(document.getElementById("container"), {
+            value: defaultContent,
+            language: "lua",
+            theme: "custom-blue", // Use the new red theme
+            folding: true,
+            dragAndDrop: true,
+            links: true,
+            minimap: {
+              enabled: true,
+            },
+            showFoldingControls: "always",
+            smoothScrolling: true,
+            stopRenderingLineAfter: 6500,
+            fontSize: 12,
+            fontFamily: "cascadia mono",
+            cursorBlinking: "smooth",
+            cursorSmoothCaretAnimation: true,
+            foldingHighlight: false,
+            fontLigatures: true,
+            formatOnPaste: true,
+            showDeprecated: true,
+            suggest: {
+              snippetsPreventQuickSuggestions: false,
+              maxVisibleSuggestions: 12,
+            },
+            lineNumbersMinChars: 4,
+          });
+          editor.getModel().updateOptions({ insertSpaces: false });
 
-    // Example for WebView2
-    if (window.chrome && window.chrome.webview) {
-        window.chrome.webview.postMessage({ type: 'executeScript', script: scriptContent });
-    }
-    
-    // Example for iframe or parent window
-    // window.parent.postMessage({ type: 'executeScript', script: scriptContent }, '*');
-    
-    showToast('Script sent!', 'success');
-};
+          const debouncedCheck = debounce(validateLuaCode, 400);
 
+          editor.onDidChangeModelContent(() => {
+            debouncedCheck();
+          });
+
+          setTimeout(validateLuaCode, 500); 
         });
-    </script>
-</body>
 
+        window.onresize = function () {
+          editor.layout();
+        };
+        Cut = function () {
+          editor.focus();
+          document.execCommand("cut");
+        };
+        Copy = function () {
+          editor.focus();
+          document.execCommand("copy");
+        };
+        Paste = function () {
+          editor.focus();
+          document.execCommand("paste");
+        };
+        Undo = function () {
+          editor.focus();
+          document.execCommand("undo");
+        };
+        Redo = function () {
+          editor.focus();
+          document.execCommand("redo");
+        };
+        Delete = function () {
+          editor.focus();
+          document.execCommand("delete");
+        };
+        SelectAll = function () {
+          editor.focus();
+          document.execCommand("selectAll");
+        };
+        GetText = function () {
+          return editor.getValue();
+        };
+        SetText = function (x) {
+          editor.setValue(x);
+        };
+        GetProposals = function () {
+          return Proposals;
+        };
+        OnDidChangeContent = function (callback) {
+          return editor.onDidChangeModelContent((event) => {
+            callback(editor.getValue());
+          });
+        };
+        OnDidChangeCursorPosition = function (callback) {
+          return editor.onDidChangeCursorPosition((event) => {
+            callback(event.position);
+          });
+        };
+        
+        SwitchMinimap = function (flag) {
+          editor.updateOptions({ minimap: { enabled: flag } });
+        };
+        SwitchReadonly = function (flag) {
+          editor.updateOptions({ readOnly: flag });
+        };
+        SwitchRenderWhitespace = function (op) {
+          editor.updateOptions({ renderWhitespace: op });
+        };
+        SwitchLinks = function (flag) {
+          editor.updateOptions({ links: flag });
+        };
+        SwitchLineHeight = function (num) {
+          editor.updateOptions({ lineHeight: num });
+        };
+        SwitchFontSize = function (num) {
+          editor.updateOptions({ fontSize: num });
+        };
+        SwitchFolding = function (flag) {
+          editor.updateOptions({ folding: flag });
+        };
+        SwitchAutoIndent = function (flag) {
+          editor.updateOptions({ autoIndent: flag });
+        };
+        SwitchFontFamily = function (name) {
+          editor.updateOptions({ fontFamily: name });
+        };
+        SwitchFontLigatures = function (flag) {
+          editor.updateOptions({ fontLigatures: flag });
+        };
+        AddSnippet = function (kindName, snippetName, data) {
+          let snippet = {
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            kind: monaco.languages.CompletionItemKind[kindName],
+          };
+          for (const key in data) {
+            let value = data[key];
+            if (key == "__children__") {
+              continue;
+            }
+            snippet[key] = value;
+          }
+          if (!snippet.label) {
+            snippet.label = snippetName;
+          }
+          if (!snippet.insertText) {
+            snippet.insertText = snippetName;
+          }
+          Proposals.push(snippet);
+        };
+        AddRawSnippet = function (data) {
+          Proposals.push(data);
+        };
+        SetScroll = function (line) {
+          editor.revealLineInCenter({ lineNumber: line });
+        };
+        Refresh = function () {
+          var Text = GetText();
+          SetText(Text);
+          editor.trigger("keyboard", "type", { text: Text });
+        };
+        AddIntellisense = function (l, k, d, i) {
+          var t;
+          switch (k) {
+            case "Class": t = monaco.languages.CompletionItemKind.Class; break;
+            case "Color": t = monaco.languages.CompletionItemKind.Color; break;
+            case "Constructor": t = monaco.languages.CompletionItemKind.Constructor; break;
+            case "Enum": t = monaco.languages.CompletionItemKind.Enum; break;
+            case "Field": t = monaco.languages.CompletionItemKind.Field; break;
+            case "File": t = monaco.languages.CompletionItemKind.File; break;
+            case "Folder": t = monaco.languages.CompletionItemKind.Folder; break;
+            case "Function": t = monaco.languages.CompletionItemKind.Function; break;
+            case "Interface": t = monaco.languages.CompletionItemKind.Interface; break;
+            case "Keyword": t = monaco.languages.CompletionItemKind.Keyword; break;
+            case "Method": t = monaco.languages.CompletionItemKind.Method; break;
+            case "Module": t = monaco.languages.CompletionItemKind.Module; break;
+            case "Property": t = monaco.languages.CompletionItemKind.Property; break;
+            case "Reference": t = monaco.languages.CompletionItemKind.Reference; break;
+            case "Snippet": t = monaco.languages.CompletionItemKind.Snippet; break;
+            case "Text": t = monaco.languages.CompletionItemKind.Text; break;
+            case "Unit": t = monaco.languages.CompletionItemKind.Unit; break;
+            case "Value": t = monaco.languages.CompletionItemKind.Value; break;
+            case "Variable": t = monaco.languages.CompletionItemKind.Variable; break;
+          }
+          Proposals.push({
+            label: l,
+            kind: t,
+            detail: d,
+            insertText: i,
+          });
+        };
+      });
+
+    function debounce(fn, wait) {
+      let t = null;
+      return function () {
+        const args = arguments;
+        clearTimeout(t);
+        t = setTimeout(function () {
+          fn.apply(null, args);
+        }, wait);
+      };
+    }
+
+    function validateLuaCode() {
+      const model = editor.getModel();
+      if (!model) return;
+
+      const code = model.getValue();
+      let markers = [];
+
+      try {
+        luaparse.parse(code, {
+          wait: false,
+          comments: false,
+          locations: true
+        });
+      } catch (err) {
+        if (err && err.line) {
+          const lineContent = model.getLineContent(err.line);
+          markers.push({
+            severity: monaco.MarkerSeverity.Error,
+            message: err.message,
+            startLineNumber: err.line,
+            startColumn: err.column || 1,
+            endLineNumber: err.line,
+            endColumn: (err.column || 1) + 1
+          });
+
+          const errorTitle = `Syntax Error at line ${err.line}, col ${err.column || 1}: ${err.message}`;
+          const preview = lineContent.trim().slice(0, 80);
+
+          if (window.CefSharp && CefSharp.PostMessage) {
+            CefSharp.PostMessage({
+              type: "luaError",
+              title: errorTitle,
+              preview: preview
+            });
+          }
+        }
+      }
+
+      monaco.editor.setModelMarkers(model, "luaparse", markers);
+
+      if (markers.length === 0) {
+        if (window.CefSharp && CefSharp.PostMessage) {
+            CefSharp.PostMessage({ type: "clearErrors" });
+        }
+      }
+    }
+    </script>
+  </body>
 </html>
